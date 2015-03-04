@@ -1,0 +1,104 @@
+<html>
+<head>
+<title>Riffwave Morse Code</title>
+</head>
+<script src="riffwave.js"></script>
+<script src="jquery-2.1.3.min.js"></script>
+<script>
+
+// space
+var sine = []; for (var i=0; i<2000; i++) sine[i] = 0;
+var wave = new RIFFWAVE(sine);
+wave.header.sampleRate = 44100; // set sample rate to 44KHz
+wave.header.numChannels = 2; // two channels (stereo)
+var audio = new Audio(wave.dataURI);
+
+// Dot
+var sine1 = []; for (var i=0; i<2000; i++) sine1[i] = 128+Math.round(127*Math.sin(i/5));
+var wave1 = new RIFFWAVE(sine1);
+wave1.header.sampleRate = 44100; // set sample rate to 44KHz
+wave1.header.numChannels = 2; // two channels (stereo)
+var audio1 = new Audio(wave1.dataURI);
+
+// Dash
+var sine2 = []; for (var i=0; i<6000; i++) sine2[i] = 128+Math.round(127*Math.sin(i/5));
+var wave2 = new RIFFWAVE(sine2);
+wave2.header.sampleRate = 44100; // set sample rate to 44KHz
+wave2.header.numChannels = 2; // two channels (stereo)
+var audio2 = new Audio(wave2.dataURI);
+
+// Dot, Dot, Dash
+var sine3 = [];
+sine3 = sine3.concat(sine1);
+sine3 = sine3.concat(sine);
+sine3 = sine3.concat(sine1);
+sine3 = sine3.concat(sine);
+sine3 = sine3.concat(sine2);
+var wave3 = new RIFFWAVE(sine3);
+wave3.header.sampleRate = 44100; // set sample rate to 44KHz
+wave3.header.numChannels = 2; // two channels (stereo)
+var audio3 = new Audio(wave3.dataURI);
+
+
+function onSuccess(){
+var url = wave3.dataURI;
+var link = document.getElementById("save");
+link.href = url;
+link.download = 'output.wav';
+}
+
+function ajax_post(){
+  var disablebutton = "convert_button";
+  $("#"+disablebutton).addClass("disabled");
+
+  var tmp = $('#morse_input').val();
+  var data = { morse_input : tmp }
+
+  $.ajax({
+    type: "POST",
+    url: "/generate",
+    data: data,
+    success: function(data){
+      console.log(data);
+      var divtoupdate = "result";
+      var enablebutton = "convert_button";
+      $("#"+divtoupdate).html(data);
+      $("#"+enablebutton).addClass("enabled");
+    }
+  });
+}
+
+
+function play(audio) {
+  if (!audio.paused) { // if playing stop and rewind
+    audio.pause();
+    audio.currentTime = 0;
+  }
+  audio.play();
+}
+
+
+
+
+</script>
+<body>
+<h1><a href="https://github.com/davidkirwan/sinatra_morse">Sinatra Morse</a> a text to Morse Code generator</h1>
+<form>
+<textarea name="morse_input" id="morse_input" rows="4" cols="50">
+Enter text
+</textarea>
+</form>
+<button id="convert_button" onmousedown="ajax_post();">Convert</button>
+<a id="save">download</a>
+<div id="result"></div>
+</br>
+<p>
+  <h3>Examples</h3>
+<button onmousedown="play(audio1);">Play Dot</button>
+<button onmousedown="play(audio2);">Play Dash</button>
+<button onmousedown="play(audio3);">Play Dot, Dot, Dash</button>
+</p>
+</br></br></br>
+<p>Built using <a href="http://codebase.es/riffwave/">riffwave.js</a> a HTML5 sound synthesis via PCM encoding library</p>
+</body>
+</html>
