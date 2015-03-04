@@ -46,7 +46,9 @@ class App < Sinatra::Base
 
   post '/generate' do
     [400, {"Content-Type" => "text/plain"},["400 Bad Request"]] unless not params["morse_input"].nil?
+    settings.log.debug "morse_input: " + params["morse_input"]
     data = Morse.to_morse(params["morse_input"])
+    settings.log.debug "to_morse: " + data
     {:data=>data}.to_json
   end
 

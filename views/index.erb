@@ -49,11 +49,40 @@ wave3.header.numChannels = 2; // two channels (stereo)
 var audio3 = new Audio(wave3.dataURI);
 
 
-function onSuccess(){
-var url = wave3.dataURI;
-var link = document.getElementById("save");
-link.href = url;
-link.download = 'output.wav';
+var sine4 = [];
+var wave4 = null;
+var audio4 = null;
+
+
+function onSuccess(str){
+  sine4 = [];
+  for (var i = 0, len = str.length; i < len; i++) {
+    if(str[i] == 'o')
+    {
+      sine4 = sine4.concat(sine1);
+      sine4 = sine4.concat(sine);
+    }
+    else if(str[i] == '-')
+    {
+      sine4 = sine4.concat(sine2);
+      sine4 = sine4.concat(sine);
+    }
+    else
+    {
+      sine4 = sine4.concat(sine);
+    }
+  }
+
+  wave4 = new RIFFWAVE(sine4);
+  wave4.header.sampleRate = 44100; // set sample rate to 44KHz
+  wave4.header.numChannels = 2; // two channels (stereo)
+  var audio4 = new Audio(wave4.dataURI);
+  play(audio4);
+
+  var url = wave4.dataURI;
+  var link = document.getElementById("save");
+  link.href = url;
+  link.download = 'output.wav';
 }
 
 function ajax_post(){
@@ -74,7 +103,7 @@ function ajax_post(){
       var enablebutton = "convert_button";
       $("#"+divtoupdate).html(theData.data);
       $("#"+enablebutton).addClass("enabled");
-      onSuccess();
+      onSuccess(theData.data);
     }
   });
 }
@@ -88,19 +117,22 @@ function play(audio) {
   audio.play();
 }
 
-
+function empty_box(){
+  $("#morse_input").val("");
+}
 
 
 </script>
 <body>
 <h1><a href="https://github.com/davidkirwan/sinatra_morse">Sinatra Morse</a> a text to Morse Code generator</h1>
 <form>
-<textarea name="morse_input" id="morse_input" rows="4" cols="50">
+<textarea onclick="empty_box();" name="morse_input" id="morse_input" rows="4" cols="50">
 Enter text
 </textarea>
 </form>
 <button id="convert_button" onmousedown="ajax_post();">Convert</button>
 <a id="save">download</a>
+<h3>Result</h3>
 <pre id="result"></pre>
 </br>
 <p>

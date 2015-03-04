@@ -47,6 +47,8 @@ class Morse
     response = []
     str.each_char do |c|
       case
+      when self.fixnum?(c)
+        response << Morse::ALPHABET[c.to_i]
       when self.string?(c)
         morse_char = Morse::ALPHABET[c.downcase.to_sym]
         if c == ' '
@@ -56,15 +58,17 @@ class Morse
         else
           response << morse_char
         end
-      when self.fixnum?(c)
-        response << Morse::ALPHABET[c]
       end
     end
     return response
   end
 
+  def self.has_digits?(str)
+    str.count("0-9") > 0
+  end
+
   def self.fixnum?(val)
-    return val.class == Fixnum
+    return self.has_digits?(val) || val.class == Fixnum
   end
 
   def self.string?(val)
