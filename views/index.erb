@@ -4,6 +4,15 @@
 </head>
 <script src="riffwave.js"></script>
 <script src="jquery-2.1.3.min.js"></script>
+<style>
+pre {
+    white-space: pre-wrap;       /* CSS 3 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+</style>
 <script>
 
 // space
@@ -59,11 +68,13 @@ function ajax_post(){
     url: "/generate",
     data: data,
     success: function(data){
-      console.log(data);
+      var theData = JSON.parse(data)
+      console.log(theData);
       var divtoupdate = "result";
       var enablebutton = "convert_button";
-      $("#"+divtoupdate).html(data);
+      $("#"+divtoupdate).html(theData.data);
       $("#"+enablebutton).addClass("enabled");
+      onSuccess();
     }
   });
 }
@@ -90,7 +101,7 @@ Enter text
 </form>
 <button id="convert_button" onmousedown="ajax_post();">Convert</button>
 <a id="save">download</a>
-<div id="result"></div>
+<pre id="result"></pre>
 </br>
 <p>
   <h3>Examples</h3>

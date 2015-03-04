@@ -8,6 +8,7 @@ $stdout.sync = true
 ##### Require statements
 require 'sinatra/base'
 require 'logger'
+require 'json'
 require File.join(File.dirname(__FILE__), '/lib/morse')
 
 module Generator
@@ -44,8 +45,8 @@ class App < Sinatra::Base
 
   post '/generate' do
     [400, {"Content-Type" => "text/plain"},["400 Bad Request"]] unless not params["morse_input"].nil?
-    data = "-oo oo       oo--oo"
-    {:data=>data}
+    data = Morse.to_morse(params["morse_input"])
+    {:data=>data}.to_json
   end
 
 end # End of the App class
