@@ -9,6 +9,7 @@ $stdout.sync = true
 require 'sinatra/base'
 require 'logger'
 require 'json'
+require 'puma'
 require File.join(File.dirname(__FILE__), '/lib/morse')
 
 module Generator
