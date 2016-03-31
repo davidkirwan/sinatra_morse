@@ -50,13 +50,15 @@ class Morse
       when self.fixnum?(c)
         response << Morse::ALPHABET[c.to_i]
       when self.string?(c)
-        morse_char = Morse::ALPHABET[c.downcase.to_sym]
         if c == ' '
           response << ['       ']
-        elsif morse_char == nil
-          # nothing
         else
-          response << morse_char
+          morse_char = Morse::ALPHABET[c.downcase.to_sym]
+          if morse_char == nil
+            # nothing
+          else
+            response << morse_char
+          end
         end
       end
     end
